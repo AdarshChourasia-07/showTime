@@ -1,0 +1,19 @@
+# Build
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Frontend
+node_modules/
+dist/
+.angular/
+
+# OS / env
+.DS_Store
+Thumbs.db
+.env
+*.log

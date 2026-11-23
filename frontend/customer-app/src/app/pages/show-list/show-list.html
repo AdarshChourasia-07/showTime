@@ -1,0 +1,50 @@
+<section class="filters">
+  <mat-form-field appearance="outline" class="city">
+    <mat-label>City</mat-label>
+    <mat-select [value]="city()" (valueChange)="city.set($event)">
+      @for (c of cities.value(); track c.code) {
+        <mat-option [value]="c.code">{{ c.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-chip-listbox aria-label="Date" [value]="date()" (change)="$event.value && date.set($event.value)">
+    @for (d of days; track d.iso) {
+      <mat-chip-option [value]="d.iso">{{ d.date | date: 'EEE d MMM' }}</mat-chip-option>
+    }
+  </mat-chip-listbox>
+</section>
+
+@if (shows.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+@if (shows.error()) {
+  <p class="message error">Could not load shows. Is the gateway (8080) and catalog-service (8081) running?</p>
+} @else if (!shows.isLoading() && groups().length === 0) {
+  <p class="message">No shows for this day. Try another date or city.</p>
+}
+
+@for (g of groups(); track g.contentId) {
+  <mat-card class="content-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>{{ g.title }}</mat-card-title>
+      <mat-card-subtitle>{{ g.language }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @for (v of g.venues; track v.venueName) {
+        <div class="venue">
+          <span class="venue-name">{{ v.venueName }}</span>
+          <div class="times">
+            @for (s of v.shows; track s.id) {
+              <a mat-stroked-button [routerLink]="['/shows', s.id]">
+                {{ s.startsAt | date: 'h:mm a' }}
+                <span class="price">from ₹{{ s.priceFrom | number: '1.0-0' }}</span>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+}

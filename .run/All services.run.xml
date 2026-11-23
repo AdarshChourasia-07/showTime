@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All services" type="CompoundRunConfigurationType">
+    <toRun name="gateway (8080)" type="SpringBootApplicationConfigurationType" />
+    <toRun name="catalog-service (8081)" type="SpringBootApplicationConfigurationType" />
+    <toRun name="inventory-service (8082)" type="SpringBootApplicationConfigurationType" />
+    <toRun name="booking-service (8083)" type="SpringBootApplicationConfigurationType" />
+    <toRun name="payment-service (8084)" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

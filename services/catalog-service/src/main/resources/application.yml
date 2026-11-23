@@ -1,0 +1,42 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/showtime
+    username: ${DB_USER:showtime}
+    password: ${DB_PASSWORD:showtime}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate          # Flyway owns the schema; Hibernate only checks it matches
+    properties:
+      hibernate:
+        default_schema: catalog
+        jdbc:
+          time_zone: UTC
+  flyway:
+    schemas: catalog
+    default-schema: catalog
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER:http://localhost:8180/realms/showtime}
+
+showtime:
+  default-zone: Asia/Kolkata       # used to turn "shows on 2026-12-01" into a time range
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /api/catalog/swagger-ui.html
+  api-docs:
+    path: /api/catalog/v3/api-docs

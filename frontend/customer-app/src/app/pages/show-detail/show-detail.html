@@ -1,0 +1,58 @@
+<a mat-button routerLink="/"><mat-icon>arrow_back</mat-icon> All shows</a>
+
+@if (show.isLoading()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+@if (show.error()) {
+  <p class="error">Could not load this show.</p>
+}
+
+@if (show.value(); as s) {
+  <header class="show-header">
+    <h1>{{ s.content.title }}</h1>
+    <p>
+      {{ s.content.language }} · {{ s.content.durationMinutes }} min
+      @if (s.content.certificate) { · {{ s.content.certificate }} }
+    </p>
+    <p class="where">
+      {{ s.venue.name }}, {{ s.screenName }} · {{ s.startsAt | date: 'EEE d MMM, h:mm a' }}
+    </p>
+  </header>
+
+  <section class="legend">
+    @for (item of legend(); track item.category) {
+      <span class="legend-item {{ item.category | lowercase }}">{{ item.name }} ₹{{ item.price | number: '1.0-0' }}</span>
+    }
+  </section>
+
+  <section class="hall" aria-label="Seat map">
+    @for (row of rows(); track row.label) {
+      <div class="row">
+        <span class="row-label">{{ row.label }}</span>
+        @for (seat of row.seats; track seat.id) {
+          <button
+            type="button"
+            class="seat {{ seat.category | lowercase }}"
+            [class.selected]="selected().has(seat.id)"
+            [attr.aria-pressed]="selected().has(seat.id)"
+            [attr.aria-label]="'Seat ' + seat.label"
+            (click)="toggle(seat)">
+            {{ seat.number }}
+          </button>
+        }
+      </div>
+    }
+    <div class="screen">SCREEN THIS WAY</div>
+  </section>
+
+  <footer class="summary">
+    @if (selectedSeats().length > 0) {
+      <span>{{ selectedSeats().length }} seat(s): {{ seatLabels() }}</span>
+      <strong>₹{{ total() | number: '1.0-0' }}</strong>
+    } @else {
+      <span>Select up to {{ maxSeats }} seats</span>
+    }
+    <!-- Phase 1: this calls inventory-service to hold the seats, then booking + payment. -->
+    <button mat-flat-button disabled title="Seat holds arrive in Phase 1">Proceed to pay</button>
+  </footer>
+}

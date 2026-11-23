@@ -1,0 +1,79 @@
+{
+  "realm": "showtime",
+  "enabled": true,
+  "displayName": "ShowTime",
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": false,
+  "loginWithEmailAllowed": true,
+  "resetPasswordAllowed": true,
+  "rememberMe": true,
+  "accessTokenLifespan": 1800,
+  "ssoSessionIdleTimeout": 7200,
+  "roles": {
+    "realm": [
+      { "name": "CUSTOMER", "description": "Books tickets" },
+      { "name": "PARTNER", "description": "Venue owner or event organiser" },
+      { "name": "ADMIN", "description": "Platform administrator" },
+      { "name": "offline_access", "description": "Offline access" },
+      { "name": "uma_authorization", "description": "UMA authorization" },
+      {
+        "name": "default-roles-showtime",
+        "description": "Given to every new user, so self sign-ups become customers",
+        "composite": true,
+        "composites": { "realm": ["CUSTOMER", "offline_access", "uma_authorization"] }
+      }
+    ]
+  },
+  "defaultRole": { "name": "default-roles-showtime" },
+  "clients": [
+    {
+      "clientId": "showtime-web",
+      "name": "ShowTime web apps",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "implicitFlowEnabled": false,
+      "redirectUris": ["http://localhost:4200/*", "http://localhost:4300/*"],
+      "webOrigins": ["http://localhost:4200", "http://localhost:4300"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:4200/*##http://localhost:4300/*"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "customer1",
+      "email": "customer1@showtime.local",
+      "firstName": "Riya",
+      "lastName": "Customer",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "customer1", "temporary": false }],
+      "realmRoles": ["default-roles-showtime", "CUSTOMER"]
+    },
+    {
+      "username": "partner1",
+      "email": "partner1@showtime.local",
+      "firstName": "PVR",
+      "lastName": "Partner",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "partner1", "temporary": false }],
+      "realmRoles": ["default-roles-showtime", "PARTNER"]
+    },
+    {
+      "username": "admin1",
+      "email": "admin1@showtime.local",
+      "firstName": "Platform",
+      "lastName": "Admin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "admin1", "temporary": false }],
+      "realmRoles": ["default-roles-showtime", "ADMIN"]
+    }
+  ]
+}

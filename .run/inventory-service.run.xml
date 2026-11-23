@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="inventory-service (8082)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="inventory-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.showtime.inventory.InventoryApplication" />
+    <option name="VM_PARAMETERS" value="-Xmx256m -XX:+UseSerialGC" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

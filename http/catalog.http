@@ -1,0 +1,94 @@
+### ShowTime - Catalog API (run from IntelliJ: click the green arrow next to each request)
+### Requests go through the gateway on :8080. Tokens come from Keycloak on :8180.
+
+### 1. Get a token for the partner test user (password grant = dev only)
+POST http://localhost:8180/realms/showtime/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=showtime-web&username=partner1&password=partner1
+
+> {% client.global.set("partnerToken", response.body.access_token); %}
+
+### 2. Get a token for the admin test user
+POST http://localhost:8180/realms/showtime/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=showtime-web&username=admin1&password=admin1
+
+> {% client.global.set("adminToken", response.body.access_token); %}
+
+### Cities (public)
+GET http://localhost:8080/api/catalog/cities
+
+### Shows in Mumbai today (public). Add &date=2026-12-01 for another day.
+GET http://localhost:8080/api/catalog/shows?city=MUM
+
+### One show with prices (public)
+GET http://localhost:8080/api/catalog/shows/1
+
+### Seat layout of screen 1 (public)
+GET http://localhost:8080/api/catalog/screens/1/layout
+
+### Movies only
+GET http://localhost:8080/api/catalog/contents?type=MOVIE
+
+### Add a city (ADMIN only)
+POST http://localhost:8080/api/catalog/cities
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "code": "DEL", "name": "Delhi" }
+
+### My venues (partner)
+GET http://localhost:8080/api/catalog/venues/mine
+Authorization: Bearer {{partnerToken}}
+
+### Add a screen with a seat layout to venue 1 (owner partner or admin)
+POST http://localhost:8080/api/catalog/venues/1/screens
+Authorization: Bearer {{partnerToken}}
+Content-Type: application/json
+
+{
+  "name": "Audi 2",
+  "rows": [
+    { "label": "A", "seats": 10, "category": "REGULAR" },
+    { "label": "B", "seats": 10, "category": "REGULAR" },
+    { "label": "C", "seats": 8,  "category": "PREMIUM" }
+  ]
+}
+
+### Schedule a show (fails with 409 if it overlaps another show on that screen)
+POST http://localhost:8080/api/catalog/shows
+Authorization: Bearer {{partnerToken}}
+Content-Type: application/json
+
+{
+  "contentId": 1,
+  "screenId": 1,
+  "startsAt": "2026-12-20T22:30:00+05:30",
+  "prices": { "REGULAR": 300, "PREMIUM": 450, "RECLINER": 800 }
+}
+
+### Try as a customer: expect 403
+POST http://localhost:8180/realms/showtime/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&client_id=showtime-web&username=customer1&password=customer1
+
+> {% client.global.set("customerToken", response.body.access_token); %}
+
+###
+POST http://localhost:8080/api/catalog/cities
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{ "code": "PUN", "name": "Pune" }
+
+### Skeleton services through the gateway (Phase 1 replaces these)
+GET http://localhost:8080/api/inventory/status
+
+###
+GET http://localhost:8080/api/bookings/status
+
+###
+GET http://localhost:8080/api/payments/status

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="booking-service (8083)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="booking-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.showtime.booking.BookingApplication" />
+    <option name="VM_PARAMETERS" value="-Xmx256m -XX:+UseSerialGC" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
